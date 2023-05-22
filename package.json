@@ -1,0 +1,55 @@
+{
+  "name": "fundraiseup-backend-test",
+  "version": "0.1.0",
+  "description": "",
+  "engines": {
+    "node": ">=18.16.0"
+  },
+  "scripts": {
+    "run-ts": "ts-node --transpile-only",
+    "run-ts:watch": "ts-node-dev --pretty --transpile-only --respawn",
+    "app": "npm run-script run-ts -- src/app.ts",
+    "app:dev": "npm run-script run-ts:watch -- src/app.ts",
+    "sync": "npm run-script run-ts -- src/sync.ts",
+    "sync:dev": "npm run-script run-ts:watch -- src/sync.ts",
+    "sync:full-reindex": "npm run-script run-ts -- src/sync.ts --full-reindex",
+    "sync:full-reindex:dev": "npm run-script run-ts:watch -- src/sync.ts --full-reindex",
+    "typeCheck": "tsc --noEmit -p .",
+    "lint:source-code": "eslint . --ext .ts --ext .js --ext .mjs --ext .cjs",
+    "lint:source-code:fix": "npm run-script lint:source-code -- --fix",
+    "format:check": "prettier --check \"**/*.{js,mjs,cjs,ts,json,md}\"",
+    "format:run": "prettier --write \"**/*.{js,mjs,cjs,ts,json,md}\"",
+    "quality:check": "npm run-script typeCheck && npm run-script lint:source-code",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ts-node": "^10.9.1"
+  },
+  "devDependencies": {
+    "@tsconfig/node18": "^2.0.1",
+    "@tsconfig/strictest": "^2.0.1",
+    "@types/node": "^20.2.1",
+    "@typescript-eslint/eslint-plugin": "^5.59.6",
+    "@typescript-eslint/parser": "^5.59.6",
+    "eslint": "^8.41.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-xo": "^0.43.1",
+    "eslint-config-xo-typescript": "^0.57.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
+    "prettier": "^2.8.8",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "5.0.4"
+  },
+  "lint-staged": {
+    "*.{ts,js,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": "prettier --write"
+  }
+}
