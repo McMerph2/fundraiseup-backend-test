@@ -1,9 +1,24 @@
-# Fundraise Up backend test
+# [Fundraise Up backend test](https://fundraiseup.notion.site/Backend-test-0e0e0961077e4e74bb6afc42dcf1759a)
 
 ## Build
 
 - [install pnpm](https://pnpm.io/installation)
 - install dependencies via `pnpm i`
+
+## Config
+
+Add `.env` file, e.g.:
+
+```ini
+DB_URI=mongodb://127.0.0.1:27017/
+DB_NAME=store
+DB_CUSTOMERS_COLLECTION_NAME=customers
+DB_CUSTOMERS_ANONYMOUS_COLLECTION_NAME=customers_anonymised
+CREATION_INTERVAL_IN_MS=200
+CREATION_CUSTOMERS_MIN_NUMBER=1
+CREATION_CUSTOMERS_MAX_NUMBER=10
+
+```
 
 ## Quality check
 
