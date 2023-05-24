@@ -1,15 +1,15 @@
+import { randomInt } from "node:crypto";
 import { setTimeout } from "node:timers/promises";
 
 import type { Collection } from "mongodb";
 
 import { config } from "../config";
 import { createRandomCustomer } from "../domain/createRandomCustomer";
-import { getRandomInt } from "../utils/getRandomInt";
 
 export const insertCustomers = async (collection: Collection) => {
-  const customersNumber = getRandomInt(
+  const customersNumber = randomInt(
     config.creation.customers.min,
-    config.creation.customers.max
+    config.creation.customers.max + 1
   );
   const customerList = Array.from(
     { length: customersNumber },
