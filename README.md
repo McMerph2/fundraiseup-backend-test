@@ -10,7 +10,7 @@
 Add `.env` file, e.g.:
 
 ```ini
-DB_URI=mongodb://127.0.0.1:27017/
+DB_URI=mongodb://mongo1:30001,mongo2:30002,mongo3:30003/?replicaSet=my-replica-set
 DB_NAME=store
 DB_CUSTOMERS_COLLECTION_NAME=customers
 DB_CUSTOMERS_ANONYMOUS_COLLECTION_NAME=customers_anonymised
