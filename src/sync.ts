@@ -1,8 +1,6 @@
-import type { Collection } from "mongodb";
-import { MongoClient } from "mongodb";
 import { ObjectId } from "mongodb";
 
-import { config } from "./config";
+import { withDb } from "./db/withDb";
 import { anonymiseCustomer } from "./domain/anonymiseCustomer";
 import type { Customer } from "./domain/Customer";
 
@@ -10,32 +8,6 @@ const fullReindexFlag = "--full-reindex";
 const isFullReindexMode = process.argv.includes(fullReindexFlag);
 
 type CustomerWithId = Customer & { _id: ObjectId };
-
-const withDb =
-  (
-    asyncFn: (
-      originalCollection: Collection,
-      anonymousCollection: Collection
-    ) => Promise<void>
-  ) =>
-  async () => {
-    const mongoClient = new MongoClient(config.db.uri);
-    try {
-      await mongoClient.connect();
-      console.log("Connected successfully to server");
-      const db = mongoClient.db(config.db.name);
-      const originalCollection = db.collection(
-        config.db.customersCollection.original
-      );
-      const anonymousCollection = db.collection(
-        config.db.customersCollection.anonymous
-      );
-
-      await asyncFn(originalCollection, anonymousCollection);
-    } finally {
-      await mongoClient.close();
-    }
-  };
 
 const fullReindex = withDb(async (originalCollection, anonymousCollection) => {
   for await (const customer of originalCollection.find()) {
