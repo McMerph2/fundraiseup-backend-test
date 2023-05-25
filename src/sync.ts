@@ -25,11 +25,11 @@ async function fullReindex() {
         anonymiseCustomer(customer as Customer & { _id: typeof customer._id })
       );
       const id = result.insertedId.toHexString();
-      console.log(
-        result.acknowledged
-          ? `Successfully inserted customer#${id}`
-          : `Failed to insert customer#${id} customer(s)`
-      );
+      if (result.acknowledged) {
+        console.log(`Successfully inserted customer#${id}`);
+      } else {
+        console.error(`Failed to insert customer#${id} customer(s)`);
+      }
     }
   } finally {
     await mongoClient.close();
