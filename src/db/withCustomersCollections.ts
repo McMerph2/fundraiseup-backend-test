@@ -3,7 +3,7 @@ import { MongoClient } from "mongodb";
 
 import { config } from "../config";
 
-export const withDb =
+export const withCustomersCollections =
   (
     asyncFn: (
       originalCollection: Collection,
