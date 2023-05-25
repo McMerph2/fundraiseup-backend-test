@@ -2,11 +2,12 @@ import { randomInt } from "node:crypto";
 import { setTimeout } from "node:timers/promises";
 
 import type { Collection } from "mongodb";
+import { MongoClient } from "mongodb";
 
 import { config } from "../config";
 import { createRandomCustomer } from "../domain/createRandomCustomer";
 
-export const insertCustomers = async (collection: Collection) => {
+export const step = async (collection: Collection) => {
   const customersNumber = randomInt(
     config.creation.customers.min,
     config.creation.customers.max + 1
@@ -24,6 +25,16 @@ export const insertCustomers = async (collection: Collection) => {
 
   await setTimeout(config.creation.intervalInMs);
   setImmediate(async () => {
-    await insertCustomers(collection);
+    await step(collection);
   });
+};
+
+export const insertCustomers = async () => {
+  const mongoClient = new MongoClient(config.db.uri);
+  await mongoClient.connect();
+  console.log("Connected successfully to server");
+  const db = mongoClient.db(config.db.name);
+  const collection = db.collection(config.db.customersCollection.original);
+
+  await step(collection);
 };
