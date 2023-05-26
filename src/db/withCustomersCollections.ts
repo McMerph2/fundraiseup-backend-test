@@ -14,7 +14,7 @@ export const withCustomersCollections =
     const mongoClient = new MongoClient(config.db.uri);
     try {
       await mongoClient.connect();
-      console.log("Connected successfully to server");
+      console.info("Connected successfully to server");
       const db = mongoClient.db(config.db.name);
       const originalCollection = db.collection(
         config.db.customersCollection.original

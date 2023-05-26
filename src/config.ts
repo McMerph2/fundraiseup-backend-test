@@ -19,6 +19,8 @@ if (!isPositiveInt(process.env["CREATION_CUSTOMERS_MIN_NUMBER"]))
   throw getNonPositiveIntError("CREATION_CUSTOMERS_MIN_NUMBER");
 if (!isPositiveInt(process.env["CREATION_CUSTOMERS_MAX_NUMBER"]))
   throw getNonPositiveIntError("CREATION_CUSTOMERS_MAX_NUMBER");
+if (!isPositiveInt(process.env["WATCH_BATCH_SIZE"]))
+  throw getNonPositiveIntError("WATCH_BATCH_SIZE");
 
 export const config = {
   db: {
@@ -35,5 +37,8 @@ export const config = {
       min: Number(process.env["CREATION_CUSTOMERS_MIN_NUMBER"]),
       max: Number(process.env["CREATION_CUSTOMERS_MAX_NUMBER"]),
     },
+  },
+  watch: {
+    batchSize: Number(process.env["WATCH_BATCH_SIZE"]),
   },
 };

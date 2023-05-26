@@ -18,7 +18,7 @@ export const step = async (collection: Collection) => {
   );
   const result = await collection.insertMany(customerList);
   if (result.acknowledged) {
-    console.log(`Successfully inserted ${result.insertedCount} customer(s)`);
+    console.debug(`Successfully inserted ${result.insertedCount} customer(s)`);
   } else {
     console.error(`Failed to insert ${customerList.length} customer(s)`);
   }
@@ -32,7 +32,7 @@ export const step = async (collection: Collection) => {
 export const insertCustomers = async () => {
   const mongoClient = new MongoClient(config.db.uri);
   await mongoClient.connect();
-  console.log("Connected successfully to server");
+  console.info("Connected successfully to server");
   const db = mongoClient.db(config.db.name);
   const collection = db.collection(config.db.customersCollection.original);
 

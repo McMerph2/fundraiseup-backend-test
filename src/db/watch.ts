@@ -1,22 +1,10 @@
-import type { Collection, UpdateResult } from "mongodb";
+import type { Collection } from "mongodb";
 import { ObjectId } from "mongodb";
 
 import { withCustomersCollections } from "../db/withCustomersCollections";
 import { anonymiseCustomer } from "../domain/anonymiseCustomer";
 import type { CustomerWithId } from "./CustomerWithId";
-
-const logCustomer = (
-  id: string,
-  acknowledged: boolean,
-  success: string,
-  fail: string
-) => {
-  if (acknowledged) {
-    console.log(`Successfully ${success} customer#${id}`);
-  } else {
-    console.error(`Failed to ${fail} customer#${id} customer(s)`);
-  }
-};
+import { addTask } from "./tasksQueue";
 
 const handleUnaccounted = async (
   originalCollection: Collection,
@@ -29,7 +17,7 @@ const handleUnaccounted = async (
     .next();
   if (!lastAnonymousCustomer) return;
 
-  console.log("Start handling unaccounted clients");
+  console.info("Start handling unaccounted clients");
   const unaccounted = originalCollection
     .find({
       _id: {
@@ -39,21 +27,18 @@ const handleUnaccounted = async (
     })
     .sort({ _id: 1 });
   for await (const customer of unaccounted) {
-    const result = await anonymousCollection.insertOne(
-      anonymiseCustomer(customer as CustomerWithId)
-    );
-    logCustomer(
-      result.insertedId.toHexString(),
-      result.acknowledged,
-      "inserted unaccounted",
-      "insert unaccounted"
+    addTask(
+      {
+        type: "insert unaccounted",
+        customer: anonymiseCustomer(customer as CustomerWithId),
+      },
+      anonymousCollection
     );
   }
 
-  console.log("Finish handling unaccounted clients");
+  console.info("Finish handling unaccounted clients");
 };
 
-// TODO Add batching
 export const watch = withCustomersCollections(
   async (originalCollection, anonymousCollection) => {
     void handleUnaccounted(originalCollection, anonymousCollection);
@@ -63,15 +48,12 @@ export const watch = withCustomersCollections(
     });
     for await (const change of changeStream) {
       if (change.operationType === "insert") {
-        const customer = change.fullDocument;
-        const result = await anonymousCollection.insertOne(
-          anonymiseCustomer(customer as CustomerWithId)
-        );
-        logCustomer(
-          result.insertedId.toHexString(),
-          result.acknowledged,
-          "inserted new",
-          "insert new"
+        addTask(
+          {
+            type: "insert",
+            customer: anonymiseCustomer(change.fullDocument as CustomerWithId),
+          },
+          anonymousCollection
         );
       } else if (change.operationType === "update") {
         const customer = change.fullDocument;
@@ -79,15 +61,12 @@ export const watch = withCustomersCollections(
         if (!(customer["_id"] instanceof ObjectId))
           throw new Error("No customer ID");
 
-        const result = (await anonymousCollection.replaceOne(
-          { _id: customer["_id"] },
-          anonymiseCustomer(customer as CustomerWithId)
-        )) as UpdateResult;
-        logCustomer(
-          customer["_id"].toHexString(),
-          result.acknowledged,
-          "updated",
-          "update"
+        addTask(
+          {
+            type: "update",
+            customer: anonymiseCustomer(customer as CustomerWithId),
+          },
+          anonymousCollection
         );
       }
     }

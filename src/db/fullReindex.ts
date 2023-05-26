@@ -14,7 +14,7 @@ export const fullReindex = withCustomersCollections(
       );
       const id = result.insertedId.toHexString();
       if (result.acknowledged) {
-        console.log(`Successfully inserted customer#${id}`);
+        console.debug(`Successfully inserted customer#${id}`);
       } else {
         console.error(`Failed to insert customer#${id} customer(s)`);
       }
