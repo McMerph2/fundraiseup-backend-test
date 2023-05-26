@@ -21,6 +21,8 @@ if (!isPositiveInt(process.env["CREATION_CUSTOMERS_MAX_NUMBER"]))
   throw getNonPositiveIntError("CREATION_CUSTOMERS_MAX_NUMBER");
 if (!isPositiveInt(process.env["WATCH_BATCH_SIZE"]))
   throw getNonPositiveIntError("WATCH_BATCH_SIZE");
+if (!isPositiveInt(process.env["WATCH_FLUSH_INTERVAL_IN_MS"]))
+  throw getNonPositiveIntError("WATCH_FLUSH_INTERVAL_IN_MS");
 
 export const config = {
   db: {
@@ -40,5 +42,6 @@ export const config = {
   },
   watch: {
     batchSize: Number(process.env["WATCH_BATCH_SIZE"]),
+    flushIntervalInMs: Number(process.env["WATCH_FLUSH_INTERVAL_IN_MS"]),
   },
 };

@@ -50,15 +50,19 @@ const handleTasks = async (
   }
 };
 
-// TODO Call it every second
 const flushTasks = (anonymousCollection: Collection) => {
   void handleTasks([...queue], anonymousCollection);
   queue = [];
 };
 
 export const addTask = (task: Task, anonymousCollection: Collection) => {
+  const timer = setTimeout(() => {
+    flushTasks(anonymousCollection);
+  }, config.watch.flushIntervalInMs);
+
   queue.push(task);
   if (queue.length >= config.watch.batchSize) {
+    clearTimeout(timer);
     flushTasks(anonymousCollection);
   }
 };
